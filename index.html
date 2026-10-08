@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<!-- 이 문서가 HTML5 문서라는 것을 브라우저에게 알려주는 선언이에요 -->
+<html lang="ko">
+<!-- lang="ko": 이 페이지의 기본 언어가 한국어라는 뜻이에요 -->
+
+<head>
+  <!-- head: 화면에는 안 보이지만 페이지에 대한 정보를 담는 곳이에요 -->
+
+  <!-- 한글이 깨지지 않도록 문자 인코딩을 UTF-8로 설정해요 -->
+  <meta charset="UTF-8">
+
+  <!-- 휴대폰에서도 화면 크기에 맞게 보이도록 설정해요 -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- 브라우저 탭에 표시될 제목이에요 -->
+  <title>바이브 카페 - 주문서</title>
+
+  <!-- style.css 파일을 연결해요 (디자인 담당) -->
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <!-- body: 실제로 화면에 보이는 내용이 들어가는 곳이에요 -->
+
+  <!-- ===================== 페이지 상단 (헤더) ===================== -->
+  <header class="cafe-header">
+    <!-- 카페 로고: 커피 이모지를 크게 보여줄 거예요 -->
+    <div class="cafe-logo">☕</div>
+
+    <!-- 카페 이름: h1은 페이지에서 가장 중요한 제목이에요 -->
+    <h1 class="cafe-name">바이브 카페</h1>
+
+    <!-- 부제: 카페를 소개하는 짧은 문구예요 -->
+    <p class="cafe-subtitle">당신의 하루에 바이브를 더하다</p>
+  </header>
+
+  <!-- ===================== 탭 메뉴 ===================== -->
+  <!-- 탭: 버튼을 눌러서 보여줄 화면을 바꾸는 메뉴예요.
+       role, aria-... 속성은 화면 낭독기(시각장애인용 프로그램)에게
+       "이건 탭 메뉴야, 지금 이게 선택됐어"라고 알려주는 역할을 해요. -->
+  <nav class="tabs" role="tablist">
+    <!-- data-panel: 이 탭을 누르면 보여줄 화면(section)의 id를 적어둬요.
+         class="tab active": active 클래스가 붙은 탭이 "선택된 탭"이에요. -->
+    <button type="button" class="tab active" id="tab-order" data-panel="order-panel"
+            role="tab" aria-selected="true" aria-controls="order-panel">☕ 주문하기</button>
+
+    <button type="button" class="tab" id="tab-history" data-panel="history-panel"
+            role="tab" aria-selected="false" aria-controls="history-panel">
+      📋 주문 내역
+      <!-- 주문 건수 배지: 주문이 0건이면 hidden 클래스로 숨겨둬요 -->
+      <span id="order-count" class="badge hidden">0</span>
+    </button>
+  </nav>
+
+  <!-- ===================== 본문 ===================== -->
+  <main>
+
+  <!-- ========== 주문하기 화면 (처음에 보이는 탭) ========== -->
+  <section id="order-panel" role="tabpanel" aria-labelledby="tab-order">
+    <!--
+      form: 사용자가 입력한 내용을 한데 모으는 상자예요.
+      novalidate: 브라우저 기본 검사를 끄는 속성이에요.
+                  이름 필수 검사는 나중에 JavaScript로 직접 할 거라서 넣었어요.
+    -->
+    <form id="order-form" novalidate>
+
+      <!-- ----- 1. 이름 (필수) ----- -->
+      <div class="form-group">
+        <!-- label의 for 값과 input의 id 값이 같으면 둘이 연결돼요.
+             그러면 글자(label)를 눌러도 입력칸에 커서가 들어가요. -->
+        <label for="customer-name">이름 (필수)</label>
+        <!-- type="text": 일반 글자를 입력하는 칸이에요 -->
+        <input type="text" id="customer-name" name="customerName" placeholder="이름을 입력하세요">
+      </div>
+
+      <!-- ----- 2. 전화번호 ----- -->
+      <div class="form-group">
+        <label for="customer-phone">전화번호</label>
+        <!-- type="tel": 전화번호 입력칸이에요. 휴대폰에서는 숫자 키패드가 떠요 -->
+        <input type="tel" id="customer-phone" name="customerPhone" placeholder="010-0000-0000">
+      </div>
+
+      <!-- ----- 3. 음료 선택 (드롭다운) ----- -->
+      <div class="form-group">
+        <label for="drink">음료 선택</label>
+        <!-- select: 여러 개 중 하나를 고르는 드롭다운 메뉴예요 -->
+        <select id="drink" name="drink">
+          <!-- 첫 항목은 안내 문구예요. value가 비어 있어서 "아직 안 골랐음"을 뜻해요 -->
+          <option value="" data-price="0">-- 음료를 선택하세요 --</option>
+          <!-- data-price: 가격을 숫자로 저장해 두는 속성이에요.
+               나중에 JavaScript가 이 숫자를 읽어서 금액을 계산할 거예요 -->
+          <option value="아메리카노" data-price="3500">아메리카노 3,500원</option>
+          <option value="카페라떼" data-price="4000">카페라떼 4,000원</option>
+          <option value="카페모카" data-price="4500">카페모카 4,500원</option>
+          <option value="바닐라라떼" data-price="4500">바닐라라떼 4,500원</option>
+          <option value="녹차라떼" data-price="4500">녹차라떼 4,500원</option>
+        </select>
+      </div>
+
+      <!-- ----- 4. 사이즈 (라디오 버튼) ----- -->
+      <!-- fieldset: 관련된 입력칸들을 하나의 묶음으로 만들어요
+           legend: 그 묶음의 제목이에요 -->
+      <fieldset class="form-group">
+        <legend>사이즈</legend>
+
+        <!-- 라디오 버튼은 name이 같으면 그중 하나만 선택할 수 있어요 -->
+        <input type="radio" id="size-s" name="size" value="S" data-price="0">
+        <label for="size-s">S (+0원)</label>
+
+        <!-- checked: 처음부터 선택되어 있게 해요 (기본값 M) -->
+        <input type="radio" id="size-m" name="size" value="M" data-price="500" checked>
+        <label for="size-m">M (+500원)</label>
+
+        <input type="radio" id="size-l" name="size" value="L" data-price="1000">
+        <label for="size-l">L (+1,000원)</label>
+      </fieldset>
+
+      <!-- ----- 5. 추가 옵션 (체크박스) ----- -->
+      <fieldset class="form-group">
+        <legend>추가 옵션</legend>
+
+        <!-- 체크박스는 라디오와 달리 여러 개를 동시에 고를 수 있어요 -->
+        <input type="checkbox" id="option-shot" name="options" value="샷 추가" data-price="500">
+        <label for="option-shot">샷 추가 (+500원)</label>
+
+        <input type="checkbox" id="option-cream" name="options" value="크림 추가" data-price="500">
+        <label for="option-cream">크림 추가 (+500원)</label>
+
+        <input type="checkbox" id="option-syrup" name="options" value="시럽 추가" data-price="300">
+        <label for="option-syrup">시럽 추가 (+300원)</label>
+
+        <input type="checkbox" id="option-decaf" name="options" value="디카페인" data-price="0">
+        <label for="option-decaf">디카페인 (+0원)</label>
+      </fieldset>
+
+      <!-- ----- 6. 수량 ----- -->
+      <div class="form-group">
+        <label for="quantity">수량</label>
+        <!-- type="number": 숫자만 입력하는 칸이에요
+             min="1": 최소 1개, max="10": 최대 10개, value="1": 처음 값은 1 -->
+        <input type="number" id="quantity" name="quantity" min="1" max="10" value="1">
+      </div>
+
+      <!-- ----- 7. 요청사항 ----- -->
+      <div class="form-group">
+        <label for="request">요청사항</label>
+        <!-- textarea: 여러 줄을 입력할 수 있는 큰 입력칸이에요
+             rows="3": 처음에 3줄 높이로 보여줘요 -->
+        <textarea id="request" name="request" rows="3" placeholder="예) 얼음 적게 주세요"></textarea>
+      </div>
+
+      <!-- ----- 8. 예상 금액 표시 영역 ----- -->
+      <!-- 나중에 JavaScript가 id="total-price" 안의 숫자를 바꿔줄 거예요 -->
+      <p class="total">
+        예상 금액: <span id="total-price">0</span>원
+      </p>
+
+      <!-- ----- 9 & 10. 버튼 ----- -->
+      <div class="button-group">
+        <!-- type="submit": 누르면 폼을 제출(주문)하는 버튼이에요 -->
+        <button type="submit" id="order-button">주문하기</button>
+        <!-- type="reset": 누르면 입력한 내용을 처음 상태로 되돌리는 버튼이에요 -->
+        <button type="reset" id="reset-button">다시 작성</button>
+      </div>
+    </form>
+
+    <!-- ----- 11. 주문 확인 메시지 영역 ----- -->
+    <!-- class="hidden": 처음에는 화면에서 숨겨 둬요. (style.css에서 display: none)
+         주문이 완료되면 JavaScript가 hidden 클래스를 빼서 메시지를 보여줘요 -->
+    <section id="order-result" class="hidden"></section>
+  </section>
+
+  <!-- ========== 주문 내역 화면 (처음에는 숨김) ========== -->
+  <section id="history-panel" class="hidden" role="tabpanel" aria-labelledby="tab-history">
+    <h2 class="history-title">주문 내역</h2>
+
+    <!-- 주문이 하나도 없을 때 보여줄 안내 문구 -->
+    <p id="empty-message" class="empty-message">아직 주문 내역이 없어요 ☕</p>
+
+    <!-- ul: 순서 없는 목록. 주문 카드(li)들을 JavaScript가 이 안에 만들어 넣어요 -->
+    <ul id="order-list" class="order-list"></ul>
+
+    <!-- 목록 아래 합계와 전체 삭제 버튼 (주문이 있을 때만 보여요) -->
+    <div id="history-summary" class="history-summary hidden">
+      <p class="history-total">
+        총 주문 금액: <span id="history-total">0</span>원 (<span id="history-count">0</span>건)
+      </p>
+      <button type="button" id="clear-button">내역 모두 지우기</button>
+    </div>
+  </section>
+  </main>
+
+  <!-- Supabase 라이브러리(supabase-js v2)를 인터넷(CDN)에서 불러와요.
+       CDN: 자주 쓰는 파일을 빠르게 받을 수 있게 모아둔 공용 서버예요.
+       script.js에서 이 라이브러리를 쓰기 때문에 반드시 script.js "보다 먼저" 불러와야 해요. -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <!-- script.js 파일을 연결해요 (기능 담당)
+       body 맨 끝에 두는 이유: HTML 요소들이 먼저 다 만들어진 뒤에
+       JavaScript가 실행되어야 요소들을 제대로 찾을 수 있기 때문이에요 -->
+  <script src="script.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,446 @@
+/* =========================================================
+   바이브 카페 주문서 - 디자인(style.css)
+   ========================================================= */
+
+/* ---------- 0. 공통 색상 정하기 ----------
+   :root 안에 "변수"로 색을 저장해 두면,
+   아래에서 var(--이름)으로 꺼내 쓸 수 있어요.
+   색을 바꾸고 싶을 때 여기 한 곳만 고치면 돼요. */
+:root {
+  --beige: #faf6f0;        /* 배경용 베이지 */
+  --brown: #6b4226;        /* 메인 갈색 */
+  --brown-light: #8a5a3b;  /* hover 때 쓸 조금 밝은 갈색 */
+  --border: #dcccbb;       /* 입력칸 테두리용 연한 갈색 */
+  --text: #3b2a1e;         /* 기본 글자색 (진한 갈색) */
+}
+
+/* ---------- 1. 모든 요소 기본 설정 ----------
+   box-sizing: border-box를 쓰면
+   width에 padding과 테두리가 포함돼서 크기 계산이 쉬워져요. */
+* {
+  box-sizing: border-box;
+}
+
+/* ---------- 2. 페이지 전체 ---------- */
+body {
+  margin: 0;                              /* 브라우저 기본 여백 없애기 */
+  padding: 24px 16px;                     /* 위아래 24px, 좌우 16px 여백 */
+  background-color: var(--beige);         /* 베이지 배경 */
+  color: var(--text);                     /* 기본 글자색 */
+  font-family: '맑은 고딕', 'Malgun Gothic', sans-serif; /* 글꼴 */
+  line-height: 1.6;                       /* 줄 간격을 넉넉하게 */
+}
+
+/* ---------- 3. 헤더(로고, 이름, 부제) ----------
+   max-width: 최대 너비 520px
+   margin: 0 auto: 좌우 여백을 자동으로 → 가운데 정렬 */
+.cafe-header {
+  max-width: 520px;
+  margin: 0 auto 20px;   /* 위 0, 좌우 자동, 아래 20px */
+  text-align: center;    /* 글자 가운데 정렬 */
+}
+
+/* 커피 이모지 로고를 크게 */
+.cafe-logo {
+  font-size: 64px;
+}
+
+/* 카페 이름 */
+.cafe-name {
+  margin: 4px 0;
+  color: var(--brown);
+  font-size: 32px;
+}
+
+/* 부제 */
+.cafe-subtitle {
+  margin: 0;
+  color: #9b7b62;   /* 조금 연한 갈색 */
+  font-size: 15px;
+}
+
+/* ---------- 3-1. 탭 메뉴 ----------
+   두 탭 버튼을 가로로 나란히 놓고, 아래에 얇은 구분선을 그어요. */
+.tabs {
+  display: flex;
+  max-width: 520px;
+  margin: 0 auto 16px;                  /* 가운데 정렬 + 아래 여백 */
+  border-bottom: 1px solid var(--border);
+}
+
+/* 탭 버튼 하나하나 */
+.tab {
+  flex: 1;                              /* 두 탭이 같은 너비로 나눠 가짐 */
+  display: flex;                        /* 글자와 배지를 가로로 나란히 */
+  justify-content: center;              /* 가운데 정렬 */
+  align-items: center;
+  gap: 6px;
+  padding: 12px 8px;
+  border: none;                         /* 버튼 기본 테두리 없애기 */
+  border-bottom: 3px solid transparent; /* 밑줄 자리 (평소엔 투명) */
+  margin-bottom: -1px;                  /* 밑줄이 구분선 위에 딱 겹치도록 */
+  background: none;                     /* 버튼 기본 회색 배경 없애기 */
+  color: #b89a82;                       /* 선택 안 된 탭: 연한 갈색 */
+  font-family: inherit;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: color 0.2s, border-color 0.2s;
+}
+
+/* 선택 안 된 탭에 마우스를 올리면 조금 진하게 */
+.tab:hover {
+  color: var(--brown-light);
+}
+
+/* 선택된 탭(active 클래스): 갈색 글씨 + 갈색 밑줄 */
+.tab.active {
+  color: var(--brown);
+  border-bottom-color: var(--brown);
+}
+
+/* 키보드(Tab 키)로 이동했을 때 어디에 있는지 보이도록 테두리 표시 */
+.tab:focus-visible {
+  outline: 2px solid var(--brown);
+  outline-offset: -2px;
+  border-radius: 6px;
+}
+
+/* 주문 건수 배지: 둥근 갈색 동그라미 */
+.badge {
+  min-width: 22px;          /* 숫자가 한 자리여도 동그랗게 */
+  padding: 1px 7px;
+  border-radius: 999px;     /* 아주 크게 주면 양 끝이 완전히 둥글어져요 */
+  background-color: var(--brown);
+  color: #ffffff;
+  font-size: 12px;
+  line-height: 1.6;
+  text-align: center;
+}
+
+/* ---------- 4. 주문서 카드 ----------
+   흰색 카드 모양 + 둥근 모서리 + 부드러운 그림자 */
+main {
+  max-width: 520px;
+  margin: 0 auto;                               /* 가운데 정렬 */
+  padding: 28px 24px;
+  background-color: #ffffff;
+  border-radius: 16px;                          /* 둥근 모서리 */
+  box-shadow: 0 4px 16px rgba(107, 66, 38, 0.12); /* 부드러운 그림자 */
+}
+
+/* ---------- 5. 입력 항목 한 줄(묶음) ---------- */
+.form-group {
+  margin-bottom: 18px;   /* 항목끼리 간격 */
+}
+
+/* 이름, 전화번호 같은 글자(label)를 입력칸 위에 한 줄로 */
+.form-group > label {
+  display: block;        /* 한 줄을 다 차지하게 → 입력칸이 아래로 내려가요 */
+  margin-bottom: 6px;
+  font-weight: bold;
+}
+
+/* ---------- 6. 입력칸 공통 스타일 ----------
+   input 중에서 라디오/체크박스는 빼고 적용해요.
+   :not(...)은 "...이 아닌 것"이라는 뜻이에요. */
+input:not([type="radio"]):not([type="checkbox"]),
+select,
+textarea {
+  width: 100%;                      /* 가로 꽉 차게 */
+  padding: 10px;                    /* 안쪽 여백 */
+  border: 1px solid var(--border);
+  border-radius: 8px;               /* 둥근 모서리 */
+  font-family: inherit;             /* 부모(body)의 글꼴을 그대로 사용 */
+  font-size: 15px;
+  color: var(--text);
+  background-color: #ffffff;
+  transition: border-color 0.2s, box-shadow 0.2s; /* 색이 부드럽게 바뀌도록 */
+}
+
+/* textarea는 세로로만 크기 조절 가능하게 (가로로 늘려서 깨지는 것 방지) */
+textarea {
+  resize: vertical;
+}
+
+/* ---------- 7. 포커스(입력칸을 클릭했을 때) ----------
+   outline: none으로 브라우저 기본 파란 테두리를 없애고,
+   갈색 테두리 + 연한 갈색 그림자로 바꿔요. */
+input:not([type="radio"]):not([type="checkbox"]):focus,
+select:focus,
+textarea:focus {
+  outline: none;
+  border-color: var(--brown);
+  box-shadow: 0 0 0 3px rgba(107, 66, 38, 0.2);
+}
+
+/* ---------- 8. 라디오/체크박스 묶음(fieldset) ----------
+   display: grid → 바둑판(표)처럼 칸을 나눠서 가로로 나란히 배치해요.
+   grid-template-columns: repeat(3, auto 1fr)
+     → "동그라미 칸(auto) + 글자 칸(1fr)" 한 쌍을 3번 반복해요.
+     → 그래서 동그라미와 글자가 항상 같은 줄에 붙어 있어요.
+       (flex로 하면 줄이 바뀔 때 동그라미만 윗줄에 남는 문제가 생겨요)
+   column-gap / row-gap → 가로, 세로 간격 */
+fieldset.form-group {
+  display: grid;
+  grid-template-columns: repeat(3, auto 1fr);  /* 한 줄에 3쌍 (사이즈 S/M/L) */
+  align-items: center;     /* 세로 가운데 맞춤 */
+  column-gap: 8px;
+  row-gap: 10px;
+  min-width: 0;            /* fieldset이 내용 때문에 카드 밖으로 넓어지는 것 방지 */
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+
+/* 추가 옵션처럼 체크박스가 들어 있는 묶음은 한 줄에 2쌍 (2 x 2 모양)
+   :has(...) → "... 을 안에 가지고 있는" 요소를 고르는 선택자예요 */
+fieldset.form-group:has(input[type="checkbox"]) {
+  grid-template-columns: repeat(2, auto 1fr);
+}
+
+/* fieldset의 제목 */
+legend {
+  padding: 0 6px;
+  font-weight: bold;
+}
+
+/* 라디오/체크박스 동그라미·네모 색을 갈색으로 */
+input[type="radio"],
+input[type="checkbox"] {
+  margin: 0;
+  accent-color: var(--brown);
+  cursor: pointer;
+}
+
+/* 라디오/체크박스 옆 글자
+   white-space: nowrap → "샷 추가 (+500원)"이 중간에서 줄바꿈되지 않게 */
+fieldset label {
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+/* ---------- 9. 예상 금액 ---------- */
+.total {
+  margin: 24px 0 16px;
+  color: var(--brown);
+  font-size: 24px;
+  font-weight: bold;
+  text-align: center;
+}
+
+/* ---------- 10. 버튼 묶음 ---------- */
+.button-group {
+  display: flex;   /* 두 버튼을 가로로 나란히 */
+  gap: 10px;
+}
+
+/* 버튼 공통 */
+.button-group button {
+  flex: 1;                   /* 두 버튼이 같은 너비로 나눠 가짐 */
+  padding: 12px;
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;           /* 마우스를 올리면 손가락 모양 */
+  transition: background-color 0.2s;
+}
+
+/* 주문하기 버튼: 갈색 배경 + 흰 글씨 */
+#order-button {
+  flex: 2;                             /* 주문하기 버튼을 더 넓게 */
+  border: 2px solid var(--brown);
+  background-color: var(--brown);
+  color: #ffffff;
+}
+
+/* 주문하기 버튼에 마우스를 올렸을 때 약간 밝게 */
+#order-button:hover {
+  background-color: var(--brown-light);
+  border-color: var(--brown-light);
+}
+
+/* 다시 작성 버튼: 흰 배경 + 갈색 테두리 */
+#reset-button {
+  border: 2px solid var(--brown);
+  background-color: #ffffff;
+  color: var(--brown);
+}
+
+/* 다시 작성 버튼 hover: 아주 연한 베이지 */
+#reset-button:hover {
+  background-color: var(--beige);
+}
+
+/* ---------- 11. 주문 확인 메시지 ---------- */
+#order-result {
+  margin-top: 20px;
+  padding: 16px;
+  background-color: #e6f7d9;   /* 연두색 배경 */
+  color: #2e7d32;              /* 초록 글씨 */
+  border-radius: 8px;          /* 둥근 모서리 */
+  line-height: 1.7;
+}
+
+/* ---------- 11-1. 주문 내역 화면 ---------- */
+
+/* "주문 내역" 제목 */
+.history-title {
+  margin: 0 0 16px;
+  color: var(--brown);
+  font-size: 20px;
+}
+
+/* 주문이 없을 때 안내 문구 */
+.empty-message {
+  margin: 32px 0;
+  color: #9b7b62;
+  text-align: center;
+}
+
+/* 주문 목록(ul): 기본 점(•)과 여백 없애기 */
+.order-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* 주문 카드 1장
+   position: relative → 안쪽의 취소 버튼을 이 카드 기준으로 배치하기 위해 필요해요. */
+.order-card {
+  position: relative;
+  margin-bottom: 12px;
+  padding: 14px 70px 14px 16px;        /* 오른쪽은 취소 버튼 자리만큼 넉넉히 */
+  background-color: var(--beige);      /* 베이지 카드 */
+  border-left: 5px solid var(--brown); /* 왼쪽 갈색 세로줄 */
+  border-radius: 8px;
+}
+
+/* 카드 안의 각 줄(p) 기본 여백 없애기 */
+.order-card p {
+  margin: 0;
+  /* keep-all: 한글은 원래 글자 단위로 줄이 바뀌어서 "시럽"이 "시/럽"으로 잘려요.
+     keep-all을 쓰면 띄어쓰기에서만 줄을 바꿔요.
+     overflow-wrap: anywhere: 띄어쓰기 없이 아주 긴 글자만 중간에서 잘라서
+     카드 밖으로 넘치지 않게 해요. */
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+}
+
+/* 1줄: "#1 홍길동님 · 5,000원" */
+.order-title {
+  color: var(--brown);
+  font-weight: bold;
+  font-size: 16px;
+}
+
+/* 2줄: 음료 내용
+   앞에 .order-card를 붙인 이유: 위의 ".order-card p" 규칙(margin: 0)보다
+   더 구체적으로 적어야 이 margin-top이 이겨서 적용돼요. */
+.order-card .order-detail {
+  margin-top: 4px;
+}
+
+/* 3줄: 요청사항 · 주문 시간 (작고 연한 글씨) */
+.order-card .order-meta {
+  margin-top: 4px;
+  color: #9b7b62;
+  font-size: 13px;
+}
+
+/* 카드 오른쪽 위 "취소" 버튼
+   position: absolute → 카드(.order-card) 안에서 원하는 위치에 딱 붙여요. */
+.cancel-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  padding: 4px 10px;
+  border: 1px solid #c9a98f;
+  border-radius: 6px;
+  background-color: #ffffff;
+  color: var(--brown);
+  font-family: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.cancel-button:hover {
+  background-color: #f3e7dc;
+}
+
+/* 목록 아래 합계 + 전체 삭제 영역 */
+.history-summary {
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px dashed var(--border);  /* 점선 구분선 */
+  text-align: center;
+}
+
+/* "총 주문 금액: 15,000원 (3건)" */
+.history-total {
+  margin: 0 0 12px;
+  color: var(--brown);
+  font-size: 20px;
+  font-weight: bold;
+}
+
+/* "내역 모두 지우기" 버튼: 다시 작성 버튼과 같은 흰 배경 + 갈색 테두리 */
+#clear-button {
+  padding: 10px 20px;
+  border: 2px solid var(--brown);
+  border-radius: 8px;
+  background-color: #ffffff;
+  color: var(--brown);
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+#clear-button:hover {
+  background-color: var(--beige);
+}
+
+/* ---------- 12. 숨기기 ----------
+   .hidden 클래스가 붙거나 hidden 속성이 있으면 화면에서 안 보이게 해요.
+   !important: 다른 규칙보다 무조건 우선 적용하라는 뜻이에요. */
+.hidden,
+[hidden] {
+  display: none !important;
+}
+
+/* ---------- 13. 휴대폰 화면 대응 ----------
+   @media: 화면 너비가 480px 이하일 때만 아래 규칙을 적용해요. */
+@media (max-width: 480px) {
+  /* 카드 안쪽 여백을 줄여서 입력칸 공간 확보 */
+  main {
+    padding: 20px 16px;
+  }
+
+  /* 로고와 카페 이름을 조금 작게 */
+  .cafe-logo {
+    font-size: 52px;
+  }
+
+  .cafe-name {
+    font-size: 26px;
+  }
+
+  /* 예상 금액 글씨도 살짝 작게 */
+  .total {
+    font-size: 21px;
+  }
+
+  /* 사이즈, 추가 옵션 모두 화면이 좁으니 한 줄에 1쌍씩 세로로
+     (선택자를 위와 똑같이 써야 위 규칙을 확실히 덮어써요) */
+  fieldset.form-group,
+  fieldset.form-group:has(input[type="checkbox"]) {
+    grid-template-columns: auto 1fr;
+  }
+
+  /* 버튼을 세로로 쌓아서 누르기 편하게 */
+  .button-group {
+    flex-direction: column;
+  }
+}
